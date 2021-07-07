@@ -7,9 +7,10 @@ from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from .models import *
 
+
 def login_view(request):
     if request.method == "POST":
-        
+               
         # Get values from user to authenticate
         username = request.POST["username"]
         password = request.POST["password"]
@@ -28,6 +29,7 @@ def login_view(request):
         return render(request, "chatroom/login.html", {
             "form": LoginForm()
         })
+
 
 def register(request):
     if request.method == "POST":
@@ -59,9 +61,11 @@ def register(request):
             "form": RegisterForm()
         })
 
+
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("login"))
+
 
 @login_required
 def index(request):
@@ -76,15 +80,17 @@ def index(request):
             "form": ChatroomForm()
         })
 
+
 @login_required
 def room(request, room_name):
     """Render the chatroom page for a specific room name
         room_name: str
     """
     
-    # Get the username of the current user
-    user = request.user.username
+    # Load the last 50 messages from the chosen room
+    messages = Message.objects.filter(room_name=room_name)[:50]
+    
     return render(request, "chatroom/room.html", {
         "room_name": room_name,
-        "user": user
+        "messages": messages
     })

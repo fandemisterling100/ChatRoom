@@ -1,2 +1,28 @@
-<h1>{{ room_name }}</h1>
-<h2>{{ user }}</h2>
+{% extends 'chatroom/layout.html' %}
+{% load static %}
+
+{% block title %} {{ room_name }} {% endblock %}
+
+{% block body %}
+    <h1>ChatRoom: {{ room_name }}</h1>
+    <div class="chat">
+        <div id="messages">
+            <!-- Show the last 50 messages sent in this room -->
+            {% for message in messages %}
+                <b>{{ message.username }}</b>: {{ message.message }}<br>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="inputs">
+        <input type="text" name="input_message" id="input_message" placeholder="Message">
+        <button id="send_message">Send</button>
+    </div>
+
+    <!-- Make the room name and username values accessible from Javascript -->
+    {{ room_name|json_script:"room_name" }}
+    {{ user.username|json_script:"username" }}
+
+    <script src="{% static 'chatroom/room.js' %}"></script>
+    
+{% endblock %}
