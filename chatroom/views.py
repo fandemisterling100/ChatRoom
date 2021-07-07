@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .forms import LoginForm, RegisterForm
+from .forms import LoginForm, RegisterForm, ChatroomForm
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
 from django.urls import reverse
@@ -65,5 +65,26 @@ def logout_view(request):
 
 @login_required
 def index(request):
-    return render(request, "chatroom/index.html")
+    if request.method == "POST":
+        # Redirect the user to the chatroom typed
+        room_name = request.POST["room_name"]
+        
+        return HttpResponseRedirect(reverse("room", kwargs={'room_name': room_name}))
+    else:
+        # Ask to the user for a chatroom to join
+        return render(request, "chatroom/index.html", {
+            "form": ChatroomForm()
+        })
 
+@login_required
+def room(request, room_name):
+    """Render the chatroom page for a specific room name
+        room_name: str
+    """
+    
+    # Get the username of the current user
+    user = request.user.username
+    return render(request, "chatroom/room.html", {
+        "room_name": room_name,
+        "user": user
+    })

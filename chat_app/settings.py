@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'chatroom',
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -67,8 +68,21 @@ TEMPLATES = [
     },
 ]
 
+# For serving the templates
 WSGI_APPLICATION = 'chat_app.wsgi.application'
 
+# For serving the sockets
+ASGI_APPLICATION = 'chat_app.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            # Select the port of the Docker container for Redis
+            'hosts': [('127.0.0.1', 6379)],
+        }
+    }
+}
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
