@@ -60,7 +60,8 @@ def register(request):
         })
 
 def logout_view(request):
-    pass
+    logout(request)
+    return HttpResponseRedirect(reverse("login"))
 
 @login_required
 def index(request):
