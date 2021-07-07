@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %} ChatApp {% endblock %}</title>
+
+</head>
+<body>
+    <h1>ChatApp</h1>
+    <div>
+        {% if user.is_authenticated %}
+            Welcome <strong>{{ user.username }} !</strong>.
+        {% endif %}
+    </div>
+    <ul class="nav">
+        {% if user.is_authenticated %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+            </li>
+        {% else %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'login' %}">Log In</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'register' %}">Register</a>
+            </li>
+        {% endif %}
+    </ul>
+    <hr>
+    {% block body %}
+    {% endblock %}
+</body>
+</html>

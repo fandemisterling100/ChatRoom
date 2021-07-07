@@ -1,0 +1,21 @@
+{% extends 'chatroom/layout.html' %}
+
+{% block title %} Login {% endblock %}
+
+{% block body %}
+
+    <h1>Login</h1>
+
+    {% if message %}
+        <div>{{ message }}</div>
+    {% endif %}
+
+    <form action="{% url 'login' %}" method="POST">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Login">
+    </form>
+
+    Don't have an account? <a href="{% url 'register' %}">Register here.</a>
+    
+{% endblock %}

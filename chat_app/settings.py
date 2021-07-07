@@ -27,10 +27,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = [
+    'chatroom',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -80,6 +80,11 @@ DATABASES = {
     }
 }
 
+# Use custom User model
+AUTH_USER_MODEL = 'chatroom.User'
+
+# Set login page for the 'login_required' decorator
+LOGIN_URL = 'login'
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
