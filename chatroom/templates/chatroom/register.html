@@ -1,0 +1,20 @@
+{% extends 'chatroom/layout.html' %}
+
+{% block title %} Register {% endblock %}
+
+{% block body %}
+    <h1>Register</h1>
+
+    {% if message %}
+        <div>{{ message }}</div>
+    {% endif %}
+
+    <form action="{% url 'register' %}" method="POST">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Register">
+    </form>
+
+    Already have an account? <a href="{% url 'login' %}">Log In here.</a>
+
+{% endblock %}
