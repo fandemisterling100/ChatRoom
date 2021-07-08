@@ -9,7 +9,7 @@
         <div id="messages">
             <!-- Show the last 50 messages sent in this room -->
             {% for message in messages %}
-                <b>{{ message.username }}</b>: {{ message.message }}<br>
+                <b>{{ message.user.username }}</b>: {{ message.message }}<br>
             {% endfor %}
         </div>
     </div>

@@ -14,7 +14,7 @@ class Message(models.Model):
     """Model for data persistence of messages sent in a chatroom
     """
 
-    username = models.CharField(max_length=255)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="messages")
     room_name = models.CharField(max_length=255)
     message = models.TextField()
     creation_date = models.DateTimeField(auto_now_add=True)
