@@ -32,7 +32,7 @@ def login_view(request):
 
 def register(request):
     if request.method == "POST":
-        
+
         # Server-side validation of the user data for registration
         form = RegisterForm(request.POST)
 
@@ -91,7 +91,7 @@ def index(request):
         if form.is_valid():
             # Get the room name
             room_name = form.cleaned_data.get("room_name")
-            return HttpResponseRedirect(reverse("room", 
+            return HttpResponseRedirect(reverse("room",
                                                 kwargs={'room_name': room_name}))
         else:
             return render(request, "chatroom/index.html", {
