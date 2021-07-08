@@ -10,12 +10,11 @@ from .models import *
 
 def login_view(request):
     if request.method == "POST":
-               
         # Get values from user to authenticate
-        username = request.POST["username"]
-        password = request.POST["password"]
+        username = request.POST.get("username")
+        password = request.POST.get("password")
         user = authenticate(request, username=username, password=password)
-        
+
         # Check authentication
         if user is not None:
             login(request, user)
@@ -33,25 +32,37 @@ def login_view(request):
 
 def register(request):
     if request.method == "POST":
-        username = request.POST["username"]
-        email = request.POST["email"]
         
-        # Server-side validation for password and confirmation
-        password = request.POST["password"]
-        confirmation = request.POST["confirmation"]
-        if password != confirmation:
+        # Server-side validation of the user data for registration
+        form = RegisterForm(request.POST)
+
+        if form.is_valid():
+            username = form.cleaned_data.get("username")
+            email = form.cleaned_data.get("email")
+            password = form.cleaned_data.get("password")
+            confirmation = form.cleaned_data.get("confirmation")
+
+            if password != confirmation:
+                return render(request, "chatroom/register.html", {
+                    "message": "Password and confirmation must match",
+                    "form": RegisterForm(request.POST)
+                })
+        else:
+            # Show validation errors of the register form
             return render(request, "chatroom/register.html", {
-                "message": "Passwords must match",
+                "message": form.errors,
                 "form": RegisterForm(request.POST)
             })
-        
+
         # Create new user
         try:
             user = User.objects.create_user(username, email, password)
             user.save()
+
+        # Handle duplicate values for users
         except IntegrityError:
             return render(request, "chatroom/register.html", {
-                "message": "This username already exists, please try another one.",
+                "message": "This username already exists.",
                 "form": RegisterForm(request.POST)
             })
         login(request, user)
@@ -69,11 +80,24 @@ def logout_view(request):
 
 @login_required
 def index(request):
+    """Ask user for a chatroom to join and validate the room name
+       before redirect the user
+    """
     if request.method == "POST":
+        # Server-side validation of the room name typed by the user
+        form = ChatroomForm(request.POST)
+
         # Redirect the user to the chatroom typed
-        room_name = request.POST["room_name"]
-        
-        return HttpResponseRedirect(reverse("room", kwargs={'room_name': room_name}))
+        if form.is_valid():
+            # Get the room name
+            room_name = form.cleaned_data.get("room_name")
+            return HttpResponseRedirect(reverse("room", 
+                                                kwargs={'room_name': room_name}))
+        else:
+            return render(request, "chatroom/index.html", {
+                "message": form.errors.as_data().get("room_name")[0],
+                "form": ChatroomForm()
+            })
     else:
         # Ask to the user for a chatroom to join
         return render(request, "chatroom/index.html", {
@@ -86,10 +110,10 @@ def room(request, room_name):
     """Render the chatroom page for a specific room name
         room_name: str
     """
-    
+
     # Load the last 50 messages from the chosen room
     messages = Message.objects.filter(room_name=room_name)[:50]
-    
+
     return render(request, "chatroom/room.html", {
         "room_name": room_name,
         "messages": messages

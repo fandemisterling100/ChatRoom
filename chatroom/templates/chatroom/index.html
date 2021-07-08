@@ -4,6 +4,13 @@
 
 {% block body %}
     <h1>ChatRoom</h1>
+    {% if message %}
+        <div class="error_message">
+            {% for error in message %}
+                <p>{{ error }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
     <form action="{% url 'index' %}" method="POST">
         {% csrf_token %}
         {{ form }}
