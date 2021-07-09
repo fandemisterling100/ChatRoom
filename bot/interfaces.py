@@ -1,6 +1,6 @@
 from chatroom.models import User
 from .entities import QUERY, _Producer
-from .answers import *
+from .bot_data import *
 import json
 import asyncio, concurrent.futures
 from asgiref.sync import sync_to_async
@@ -29,17 +29,18 @@ class _BotInterface(_Producer):
         print("entra al receive del bot")
         self.client = user
         self.medium = medium
-        await self.__send_answer("NO FUNCIONA :(","kathe")
         
         is_command = await self.__check_command(message)
         print(f"----------- ES COMANDO: {is_command}")
-        # if is_command:
-        #     self.create_queue(message, self.client.username)
-        #     self.__await_result()
-        # else:
-        #     answer = self.__choose_answer(message,self.client.username)
-        #     self.__send_answer(answer,self.client.username)
-        #     return
+        if is_command:
+            self.create_queue(message, self.client.username)
+            self.__await_result()
+        else:
+            print("no es comando")
+            answer = await self.__choose_answer(message,self.client.username)
+            print(f"Answer is: {answer}")
+            if answer is not None: await self.__send_answer(answer,self.client.username)
+            return
         
             
     async def __check_command(self, message):
@@ -48,11 +49,14 @@ class _BotInterface(_Producer):
     async def __choose_answer(self, message, username):
         """Pick an answer according to default options
         """
+        print(f"El mensaje es {message}")
         for option in ANSWERS.keys():
             if message.startswith(option):
                 return ANSWERS[option].replace("user", username)
-            else:
+            elif message.startswith('/'):
                 return DEFAULT.replace("user", username)
+            else:
+                return None
             
     async def __send_answer(self, answer, username):
         #self.medium.receive(json.dumps({'message':answer, 'username': username, 'room_name': self.room_group_name}))
@@ -74,7 +78,8 @@ class _BotInterface(_Producer):
         #     'message': answer,
         #     'username': username
         # }))
-        await self.medium.receive(json.dumps({'message':answer, 'username': username, 'room_name': self.room_group_name}))
+        print("EL BOT INTENTA ENVIAR EL MENSAJE")
+        await self.medium.receive(json.dumps({'message':answer, 'username': USER_DATA.get("username"), 'room_name': self.room_group_name}))
         
         
     # def __await_result(self):

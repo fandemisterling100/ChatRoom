@@ -2,3 +2,8 @@ ANSWERS = {'/help': " Hello user! You can use the command /stock=stock_code to c
            '/hi': "Hi user! How are you?",
            '/bye': "See you user!"}
 DEFAULT = "sorry user, I did not understand, try /help"
+
+USER_DATA = {
+    "username": "Bot",
+    "email": "bot@email.com"
+}

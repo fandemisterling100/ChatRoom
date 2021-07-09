@@ -35,7 +35,7 @@ class ChatroomConsumer(AsyncWebsocketConsumer):
 
         print("entra el receive del consumers")
         print(username)
-        await self.save_message(username, room_name, message)
+        
 
         # Send the message to a room group
         await self.channel_layer.group_send(
@@ -46,6 +46,8 @@ class ChatroomConsumer(AsyncWebsocketConsumer):
                 'username': username
             }
         )
+        
+        await self.save_message(username, room_name, message)
         
     # Receive message from room group
     async def chat_message(self, event):
@@ -67,7 +69,7 @@ class ChatroomConsumer(AsyncWebsocketConsumer):
         print("entra a save message")
         # Get User object from DB by username
         user = await self.get_user(username)
-
+        print(user)
         
         await self.create_message(user, room_name, message)
         # Manage messages receives using a 
@@ -85,16 +87,16 @@ class ChatroomConsumer(AsyncWebsocketConsumer):
     
     @sync_to_async
     def create_message(self, user, room_name, message):
-        
+        print("se guarda el mensaje")
         Message.objects.create(user=user,
                                room_name=room_name,
                                message=message)
+        return
 
 
     async def _manage_message(self, user, room_name, message):
         print("entra a manage message")
         recipient = _BotInterface(user.username, room_name)
-        print(recipient)
         await recipient.receive(
         user=user,
         message=message,
