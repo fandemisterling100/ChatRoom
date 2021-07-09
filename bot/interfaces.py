@@ -1,14 +1,15 @@
 from chatroom.models import User
-from .entities import QUERY, _Producer
+from .entities import QUERY, _Producer, Consumer
 from .bot_data import *
 import json
 import asyncio, concurrent.futures
 from asgiref.sync import sync_to_async
+import threading
 
 class _BotInterface(_Producer):
     def __init__(self, name, group_name):
         
-        # To get access to create_queue method
+        # To get access to __create_queue method
         super(_BotInterface, self).__init__()
         self.room_group_name = group_name
             
@@ -20,26 +21,29 @@ class _BotInterface(_Producer):
         self.medium = medium
         is_command = await self.__check_command(message)
         if is_command:
-            self.create_queue(message, self.client.username)
+            self.publish_query(message, self.client.username)
             self.__await_result()
         else:
             answer = await self.__choose_answer(message,self.client.username)
             if answer: await self.__send_answer(answer)
             return
-        
-    async def __check_command(self, message):
-        return True if message.startswith(QUERY) else False
     
-    async def __choose_answer(self, message, username):
+    @staticmethod
+    async def __check_command(message):
+        return True if message.startswith(f"/{QUERY}") else False
+    
+    @staticmethod
+    async def __choose_answer(message, username):
         """Pick an answer according to default options
         """
+        print("choose answer")
         for option in ANSWERS.keys():
             if message.startswith(option):
                 return ANSWERS[option].replace("user", username)
-            elif message.startswith('/'):
-                return DEFAULT.replace("user", username)
-            else:
-                return None
+        
+        if message.startswith('/'):
+            return DEFAULT.replace("user", username)        
+        return None
             
     async def __send_answer(self, answer):
         # await self.medium.send(text_data=json.dumps({
@@ -51,10 +55,9 @@ class _BotInterface(_Producer):
                                               'username': USER_DATA.get("username"), 
                                               'room_name': self.room_group_name}))
         
-        
-    # def __await_result(self):
-    #     listen_thread = threading.Thread(
-    #         target=RedistributionListener,
-    #         args=(self, 'redistribution-' + self.client.username))
-    #     listen_thread.start()
+    def __await_result(self):
+        listen_thread = threading.Thread(
+            target=Consumer,
+            args=(self, f"BotStocks-{self.client.username}"))
+        listen_thread.start()
         

@@ -56,23 +56,25 @@ class ChatroomConsumer(AsyncWebsocketConsumer):
         }))
 
     async def save_and_check(self, username, room_name, message):
-        user = await self.get_user(username)
+        user = await self.__get_user(username)
 
         # Save the message in DB
-        await self.create_message(user, room_name, message)
+        await self.__create_message(user, room_name, message)
 
         # Manage messages received using a bot interface
         await self._manage_message(user, room_name, message)
 
+    @staticmethod
     @sync_to_async
-    def get_user(self, username):
+    def __get_user(username):
         # Get User object from DB by username
         user = User.objects.get(username=username)
         return user
 
     # Store messages sent in a chatroom
+    @staticmethod
     @sync_to_async
-    def create_message(self, user, room_name, message):
+    def __create_message(user, room_name, message):
         Message.objects.create(user=user,
                                room_name=room_name,
                                message=message)
