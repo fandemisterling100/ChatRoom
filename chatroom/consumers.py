@@ -2,6 +2,7 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import sync_to_async
 from .models import Message, User
+from bot.interfaces import _BotInterface
 
 
 class ChatroomConsumer(AsyncWebsocketConsumer):
@@ -28,10 +29,12 @@ class ChatroomConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         # Decode JSON message sent from the Front-End
         data = json.loads(text_data)
-        message = data['message']
-        username = data['username']
-        room_name = data['room_name']
+        message = data.get('message')
+        username = data.get('username')
+        room_name = data.get('room_name')
 
+        print("entra el receive del consumers")
+        print(username)
         await self.save_message(username, room_name, message)
 
         # Send the message to a room group
@@ -43,11 +46,12 @@ class ChatroomConsumer(AsyncWebsocketConsumer):
                 'username': username
             }
         )
-
+        
     # Receive message from room group
     async def chat_message(self, event):
-        message = event['message']
-        username = event['username']
+        print("se envia el mensaje")
+        message = event.get('message')
+        username = event.get('username')
 
         # Send message back to WebSocket
         await self.send(text_data=json.dumps({
@@ -56,12 +60,43 @@ class ChatroomConsumer(AsyncWebsocketConsumer):
         }))
 
     # Store messages sent in a chatroom asynchronously
+    
+    
+    
+    async def save_message(self, username, room_name, message):
+        print("entra a save message")
+        # Get User object from DB by username
+        user = await self.get_user(username)
+
+        
+        await self.create_message(user, room_name, message)
+        # Manage messages receives using a 
+        # bot interface
+        await self._manage_message(user, room_name, message)
+        
     @sync_to_async
-    def save_message(self, username, room_name, message):
+    def get_user(self, username):
         
         # Get User object from DB by username
         user = User.objects.get(username=username)
+        self.user = user
+
+        return user
+    
+    @sync_to_async
+    def create_message(self, user, room_name, message):
         
         Message.objects.create(user=user,
                                room_name=room_name,
                                message=message)
+
+
+    async def _manage_message(self, user, room_name, message):
+        print("entra a manage message")
+        recipient = _BotInterface(user.username, room_name)
+        print(recipient)
+        await recipient.receive(
+        user=user,
+        message=message,
+        medium=self)
+

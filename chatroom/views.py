@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from .models import *
 
+MESSAGES_LIMIT = 50
 
 def login_view(request):
     if request.method == "POST":
@@ -112,7 +113,7 @@ def room(request, room_name):
     """
 
     # Load the last 50 messages from the chosen room
-    messages = Message.objects.filter(room_name=room_name)[:50]
+    messages = Message.objects.filter(room_name=room_name)[:MESSAGES_LIMIT]
 
     return render(request, "chatroom/room.html", {
         "room_name": room_name,
