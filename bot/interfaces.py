@@ -11,45 +11,28 @@ class _BotInterface(_Producer):
         # To get access to create_queue method
         super(_BotInterface, self).__init__()
         self.room_group_name = group_name
-        
-        # Find the user who post the message
-        self.def_user(name)
-    
-    @sync_to_async
-    def def_user(self, name):
-        try:
-            self.user = User.objects.get(username=name)
-        except User.DoesNotExist:
-            print("The user doesn't exist.")
             
     async def receive(self, user, message, medium):
         """Check if the message received is a 
            special command to call a bot
         """
-        print("entra al receive del bot")
         self.client = user
         self.medium = medium
-        
         is_command = await self.__check_command(message)
-        print(f"----------- ES COMANDO: {is_command}")
         if is_command:
             self.create_queue(message, self.client.username)
             self.__await_result()
         else:
-            print("no es comando")
             answer = await self.__choose_answer(message,self.client.username)
-            print(f"Answer is: {answer}")
-            if answer is not None: await self.__send_answer(answer,self.client.username)
+            if answer: await self.__send_answer(answer)
             return
         
-            
     async def __check_command(self, message):
         return True if message.startswith(QUERY) else False
     
     async def __choose_answer(self, message, username):
         """Pick an answer according to default options
         """
-        print(f"El mensaje es {message}")
         for option in ANSWERS.keys():
             if message.startswith(option):
                 return ANSWERS[option].replace("user", username)
@@ -58,28 +41,15 @@ class _BotInterface(_Producer):
             else:
                 return None
             
-    async def __send_answer(self, answer, username):
-        #self.medium.receive(json.dumps({'message':answer, 'username': username, 'room_name': self.room_group_name}))
-        # pool = concurrent.futures.ThreadPoolExecutor()
-        # result = pool.submit(asyncio.run, self.medium.receive(json.dumps({'message':answer, 'username': username, 'room_name': self.room_group_name}))).result()
-        # print('exiting synchronous_property', result)
-        # self.medium.group_send(
-        #     self.room_group_name,
-        #     {
-        #         'type': 'chat_message',
-        #         'message': answer,
-        #         'username': username
-        #     }
-        # )
-        # print("entra a send answer")
-        # print(self.medium)
-        # print(type(self.medium))
+    async def __send_answer(self, answer):
         # await self.medium.send(text_data=json.dumps({
         #     'message': answer,
-        #     'username': username
+        #     'username': USER_DATA.get("username")
         # }))
-        print("EL BOT INTENTA ENVIAR EL MENSAJE")
-        await self.medium.receive(json.dumps({'message':answer, 'username': USER_DATA.get("username"), 'room_name': self.room_group_name}))
+        print("Bot tries to send message")
+        await self.medium.receive(json.dumps({'message':answer, 
+                                              'username': USER_DATA.get("username"), 
+                                              'room_name': self.room_group_name}))
         
         
     # def __await_result(self):
