@@ -67,18 +67,8 @@ class _BotInterface(_Producer):
         print(f"Bot answer: {bot_answer}")
         print("Sending bot answer from app consumer...")
         loop = asyncio.new_event_loop()
-        # loop.create_task(self.__send_answer(bot_answer))
-
-        # loop.run_until_complete(self.__send_answer(bot_answer))
-        # loop.close()
-        consumer.channel.stop_consuming()
         loop.run_until_complete(
             self.medium.send(text_data=json.dumps({
             'message': bot_answer,
             'username': "Bot"
         })))
-        
-            
-        
-        #loop.run_until_complete(self.__send_answer(bot_answer))
-        #asyncio.run(self.__send_answer(bot_answer))

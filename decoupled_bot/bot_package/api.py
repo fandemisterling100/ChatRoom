@@ -1,6 +1,6 @@
 import requests
-import json
-import grequests
+import csv
+
 
 class StooqAPI:
 
@@ -8,33 +8,30 @@ class StooqAPI:
     def get_stock_quote(cls, stock_code):
         print("Connecting to API...")
         # Get CSV data from API by stock code
-        CSV_URL = ('https://stooq.com/q/l/?s=', '&f=sd2t2ohlcv&h&e=csv​')
-        url = f"{CSV_URL[0]}{stock_code}{CSV_URL[1]}"  
-        #response = requests.get(url)
-        response = grequests.get(url)
+        CSV_URL = ('https://stooq.com/q/l/?s=', '&f=sd2t2ohlcv&h&e=csv')
+        url = f"{CSV_URL[0]}{stock_code.lower()}{CSV_URL[1]}"  
 
-        data =  cls._parse_csv(response)
-        return cls._calculate_quote(data)
+        with requests.Session() as s:
+            download = s.get(url)
+
+        return cls._parse_csv(download)
         
     @staticmethod
-    def _parse_csv(csv, separator=','):
+    def _parse_csv(data, separator=','):
         print("Parsing Data...")
         # Parse CSV retrieved from API
-        print(csv)
-        print(type(csv))
         try:
-            print(csv.json())
+            decoded_content = data.content.decode('utf-8')
+            cr = csv.reader(decoded_content.splitlines(), delimiter=separator)
+            second_row = list(cr)[1]
+            max_value = float(second_row[4])
         except:
-            print("Couln't parse")
+            print("Couldn't parse")
+            return 0
         else:
             print("Parsing finished...")
-        return 0
-    
-    @staticmethod
-    def _calculate_quote(data):
-        print("Calculating value...")
-        # get the highest value from the returned data
-        return 10
+            return max_value
+        
     
         
     

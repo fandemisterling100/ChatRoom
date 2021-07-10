@@ -20,7 +20,7 @@ def redistribute(client, message):
     
 class _BotConsumer:
     
-    RETURNS ={"API_error": "I couln't retrieve the information.",
+    RETURNS ={"API_error": "I couldn't return the information.",
               "Success": "stock_code quote is $value per share",
               "user_error": "Please verify your stock command."}
     
@@ -55,10 +55,13 @@ class _BotConsumer:
                 print("API answered!")
                 # The request was completed successfully,
                 # it sends share value to channel
-                bot_answer = self.RETURNS.get("Success")
-                bot_answer = bot_answer.replace("stock_code", stock_code)
-                bot_answer = bot_answer.replace("value", str(share_value))
-                redistribute(self.client, bot_answer)
+                if share_value != 0:
+                    bot_answer = self.RETURNS.get("Success")
+                    bot_answer = bot_answer.replace("stock_code", stock_code)
+                    bot_answer = bot_answer.replace("value", str(share_value))
+                    redistribute(self.client, bot_answer)
+                else:
+                    redistribute(self.client, self.RETURNS.get('API_error'))
         else:
             redistribute(self.client, self.RETURNS.get('user_error'))
     

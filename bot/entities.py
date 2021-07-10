@@ -40,19 +40,10 @@ class Consumer:
         self.channel.basic_consume(queue,
                                    self.callback,
                                    auto_ack=True)
-        #self.connection.add_timeout(self.TIMEOUT, self.on_timeout)
         self.interface = interface
         self.accomplished = False
         self.channel.start_consuming()
         
-    # def on_timeout(self):
-    #     self.channel.stop_consuming()
-        
-    #     if not self.accomplished:
-    #         print("Timeout")
-    #     else:
-    #         print("finished")
-    
     def callback(self, ch, method, properties, body):
         print("The APP received bot answer!")
         self.accomplished = True
