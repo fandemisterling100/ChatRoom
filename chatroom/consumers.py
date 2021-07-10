@@ -3,6 +3,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import sync_to_async
 from .models import Message, User
 from bot.interfaces import _BotInterface
+from bot.bot_data import USER_DATA
 
 
 class ChatroomConsumer(AsyncWebsocketConsumer):

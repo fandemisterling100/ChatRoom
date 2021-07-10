@@ -12,28 +12,35 @@ class _Producer:
     def publish_query(self, message, username):
         # Post query on a queue named stock
         # with the format username:stock_code
-        stock_code = message.split('=')[1]
-        body = f"{username}:{stock_code}"
-        self.channel.queue_declare(queue=QUERY)
-        self.channel.basic_publish(
-            exchange='',
-            routing_key=QUERY,
-            body=body)
-        self.connection.close()
-        
+        try:
+            print("Publishing stock command...")
+            stock_code = message.split('=')[1]
+            body = f"{username}:{stock_code}"
+            self.channel.queue_declare(queue=QUERY)
+            self.channel.basic_publish(
+                exchange='',
+                routing_key=QUERY,
+                body=body)
+            self.connection.close()
+        except:
+            print("Wrong query format")
+            
 class Consumer:
     
     TIMEOUT = 10
     
     def __init__(self, interface, queue):
+        
+        print("Init chat entity consumer")
+        print(queue)
         self.connection = pika.BlockingConnection(
             pika.ConnectionParameters('localhost'))
         self.channel = self.connection.channel()
         self.channel.queue_declare(queue=queue)
-        self.channel.basic_consume(self.callback,
-                                   queue=queue,
-                                   no_ack=True)
-        self.connection.add_timeout(self.TIMEOUT, self.on_timeout)
+        self.channel.basic_consume(queue,
+                                   self.callback,
+                                   auto_ack=False)
+        #self.connection.add_timeout(self.TIMEOUT, self.on_timeout)
         self.interface = interface
         self.accomplished = False
         self.channel.start_consuming()
@@ -47,7 +54,7 @@ class Consumer:
             print("finished")
     
     def callback(self, ch, method, properties, body):
+        print("The APP received bot answer!")
         self.accomplished = True
-        
-        # Receive data from decoupled bot
-        self.interface.on_worker_result(body.decode("utf-8"))
+        # Send answer from bot to chat
+        self.interface.send_stock_quote(body.decode("utf-8"))

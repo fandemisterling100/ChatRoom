@@ -36,15 +36,14 @@ class _BotInterface(_Producer):
     async def __choose_answer(message, username):
         """Pick an answer according to default options
         """
-        print("choose answer")
         for option in ANSWERS.keys():
             if message.startswith(option):
                 return ANSWERS[option].replace("user", username)
-        
+
         if message.startswith('/'):
             return DEFAULT.replace("user", username)        
         return None
-            
+
     async def __send_answer(self, answer):
         # await self.medium.send(text_data=json.dumps({
         #     'message': answer,
@@ -54,10 +53,16 @@ class _BotInterface(_Producer):
         await self.medium.receive(json.dumps({'message':answer, 
                                               'username': USER_DATA.get("username"), 
                                               'room_name': self.room_group_name}))
-        
+
     def __await_result(self):
+        print("Threading")
         listen_thread = threading.Thread(
             target=Consumer,
             args=(self, f"BotStocks-{self.client.username}"))
         listen_thread.start()
+
+    def send_stock_quote(self, bot_answer):
+        print(f"Bot answer: {bot_answer}")
+        print("Sending bot answer from app consumer...")
         
+        self.__send_answer(bot_answer)
