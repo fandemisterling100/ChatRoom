@@ -33,6 +33,7 @@ class StooqAPI:
     @staticmethod
     def _calculate_quote(data):
         print("Calculating value...")
+        # get the highest value from the returned data
         return 10
     
         

@@ -5,6 +5,8 @@ import json
 import asyncio, concurrent.futures
 from asgiref.sync import sync_to_async
 import threading
+from contextlib import suppress
+
 
 class _BotInterface(_Producer):
     def __init__(self, name, group_name):
@@ -61,8 +63,22 @@ class _BotInterface(_Producer):
             args=(self, f"BotStocks-{self.client.username}"))
         listen_thread.start()
 
-    def send_stock_quote(self, bot_answer):
+    def send_stock_quote(self, bot_answer, consumer):
         print(f"Bot answer: {bot_answer}")
         print("Sending bot answer from app consumer...")
+        loop = asyncio.new_event_loop()
+        # loop.create_task(self.__send_answer(bot_answer))
+
+        # loop.run_until_complete(self.__send_answer(bot_answer))
+        # loop.close()
+        consumer.channel.stop_consuming()
+        loop.run_until_complete(
+            self.medium.send(text_data=json.dumps({
+            'message': bot_answer,
+            'username': "Bot"
+        })))
         
-        asyncio.run(self.__send_answer(bot_answer))
+            
+        
+        #loop.run_until_complete(self.__send_answer(bot_answer))
+        #asyncio.run(self.__send_answer(bot_answer))
