@@ -31,7 +31,7 @@ class _BotConsumer:
         self.channel.queue_declare(queue=QUEUE)
         self.channel.basic_consume(QUEUE,
                                    self.callback,
-                                   auto_ack=False)
+                                   auto_ack=True)
         self.client = ''
         self.start_consuming()
     
