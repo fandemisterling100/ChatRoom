@@ -2,10 +2,8 @@ from chatroom.models import User
 from .entities import QUERY, _Producer, Consumer
 from .bot_data import *
 import json
-import asyncio, concurrent.futures
-from asgiref.sync import sync_to_async
+import asyncio
 import threading
-from contextlib import suppress
 
 
 class _BotInterface(_Producer):
@@ -47,10 +45,6 @@ class _BotInterface(_Producer):
         return None
 
     async def __send_answer(self, answer):
-        # await self.medium.send(text_data=json.dumps({
-        #     'message': answer,
-        #     'username': USER_DATA.get("username")
-        # }))
         print("Bot tries to send message")
         await self.medium.receive(json.dumps({'message':answer, 
                                               'username': USER_DATA.get("username"), 
