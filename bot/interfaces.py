@@ -65,4 +65,4 @@ class _BotInterface(_Producer):
         print(f"Bot answer: {bot_answer}")
         print("Sending bot answer from app consumer...")
         
-        self.__send_answer(bot_answer)
+        asyncio.run(self.__send_answer(bot_answer))

@@ -12,7 +12,7 @@ class StooqAPI:
         url = f"{CSV_URL[0]}{stock_code}{CSV_URL[1]}"  
         #response = requests.get(url)
         response = grequests.get(url)
-        
+
         data =  cls._parse_csv(response)
         return cls._calculate_quote(data)
         
