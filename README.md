@@ -19,11 +19,11 @@ Chatrooms web application with bot assistance to consult share quotes in the mar
 1. Clone repository from `https://github.com/fandemisterling100/ChatRoom.git`
 2. Install the packages required from the `ChatRoom/` folder via:
 
-`$ pip install -r requirements.txt`
+	`$ pip install -r requirements.txt`
 
 3.  To use the Redis and RabbitMQ services we will use docker containers (Be sure your docker daemon is running):
 
-    	 `$ sudo apt install docker.io` (If you don't have Docker installed) 
+    	 `$ sudo apt install docker.io` 
 
 	 `$ sudo dockerd`
 
