@@ -1,10 +1,6 @@
 # Browser-based Chat App  📈 💻
 Chatrooms web application with bot assistance to consult share quotes in the market. Implemented using Django, Redis, Channels and RabbitMQ.
 
-**Table of Contents** :tw-1f4cb:
-
-[TOC]
-
 ## Features ✔️
 
 -  User registration and login.
