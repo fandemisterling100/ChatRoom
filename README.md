@@ -16,25 +16,25 @@ Chatrooms web application with bot assistance to consult share quotes in the mar
 - Handle exceptions raised within the bot.
 
 ## Installation ⚙️
-
-1. Install the packages required via:
+1. Clone repository from `https://github.com/fandemisterling100/ChatRoom.git`
+2. Install the packages required from the `ChatRoom/` folder via:
 `$ pip install -r requirements.txt`
-2.  To use the Redis and RabbitMQ services we will use docker containers (Be sure your docker daemon is running):
+3.  To use the Redis and RabbitMQ services we will use docker containers (Be sure your docker daemon is running):
 
 	- `$ docker run -p 6379:6379 -d redis:5`
 	
 	- `$ docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672rabbitmq:3-management`
 
-3.   Make migrations and migrate them to create the db.sqlite3 on your project directory (being inside chat_app folder):
+4.   Make migrations and migrate them to create the db.sqlite3 on your project directory (being inside chat_app folder):
 	`$ python manage.py makemigrations chatroom`
 
 	`$ python manage.py migrate`
 	
-4. Serve page:
+5. Serve page:
 
 	`$ python manage.py runserver`
 
-5.  Create bot user by clicking on **Register Here** and filling the fields according to the following information:
+6.  Create bot user by clicking on **Register Here** and filling the fields according to the following information:
 
 	```javascript
 	USER_DATA = {
@@ -44,7 +44,7 @@ Chatrooms web application with bot assistance to consult share quotes in the mar
 		}
 	```
 
-6. LogOut
+7. LogOut
 
 ## Usage 🧑‍💻
 1. Move to folder `/chat_app/decoupled_bot` and run the decoupled bot to start to consume from the stock queue:
@@ -56,7 +56,7 @@ Chatrooms web application with bot assistance to consult share quotes in the mar
 4. To get into a chat room just type a valid room name (alphanumeric value) from the index page (redirected when you log in) and click on **Join**.
 5. Start chatting!
 
-## Bot commands 🤖
+## Bot commands
 The word **user** is replaced with the username of whom invoked the bot. **STOCK_CODE** corresponds to the company symbol that the user is asking and **value** corresponds to the maximum quote of the shares.
 
 | Command     | Bot Answer |
