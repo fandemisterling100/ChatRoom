@@ -25,7 +25,7 @@ Chatrooms web application with bot assistance to consult share quotes in the mar
 	
 	- `$ docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management`
 
-4.   Make migrations and migrate them to create the db.sqlite3 on your project directory (being inside chat_app folder):
+4.   Make migrations and migrate them to create the db.sqlite3 on your project directory (being inside `ChatRoom/` folder):
 	`$ python manage.py makemigrations chatroom`
 
 	`$ python manage.py migrate`
@@ -67,3 +67,4 @@ The word **user** is replaced with the username of whom invoked the bot. **STOCK
 | /stock=stock_code      |   STOCK_CODE quote is $value per share |
 | Other words starting with / | sorry user, I did not understand, try /help |
 
+##### Python Version: 3.8.5
