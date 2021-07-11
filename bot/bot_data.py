@@ -10,5 +10,6 @@ DEFAULT = "sorry user, I did not understand, try /help"
 
 USER_DATA = {
     "username": "Bot",
-    "email": "bot@email.com"
+    "email": "bot@email.com",
+    "password": "1234"
 }
