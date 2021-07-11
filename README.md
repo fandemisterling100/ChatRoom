@@ -18,18 +18,24 @@ Chatrooms web application with bot assistance to consult share quotes in the mar
 ## Installation ⚙️
 1. Clone repository from `https://github.com/fandemisterling100/ChatRoom.git`
 2. Install the packages required from the `ChatRoom/` folder via:
+
 `$ pip install -r requirements.txt`
 3.  To use the Redis and RabbitMQ services we will use docker containers (Be sure your docker daemon is running):
 
-	- `$ docker run -p 6379:6379 -d redis:5`
-	
-	- `$ docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management`
+    -`$ sudo apt install docker.io` (If you don't have Docker installed)
+
+    - `$ sudo dockerd`
+
+    - `$ sudo docker run -p 6379:6379 -d redis:5`
+
+    - `$ sudo docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management`
 
 4.   Make migrations and migrate them to create the db.sqlite3 on your project directory (being inside `ChatRoom/` folder):
-	`$ python manage.py makemigrations chatroom`
 
-	`$ python manage.py migrate`
-	
+	 `$ python manage.py makemigrations chatroom`
+
+	 `$ python manage.py migrate`
+
 5. Serve page:
 
 	`$ python manage.py runserver`
@@ -47,10 +53,10 @@ Chatrooms web application with bot assistance to consult share quotes in the mar
 7. LogOut
 
 ## Usage 🧑‍💻
-1. Move to folder `/chat_app/decoupled_bot` and run the decoupled bot to start to consume from the stock queue:
+1. Move to folder `decoupled_bot/` and run the decoupled bot to start to consume from the stock queue:
  `python3 -m bot_package.consumers`
  
-2. Return to folder `/chat_app/` and serve the page (if it was not being served) via: `$ python manage.py runserver`
+2. Return to folder `ChatRoom/` and serve the page (if it was not being served) via: `$ python manage.py runserver`
 
 3. Now you can register on the page your own users and Log them in.
 4. To get into a chat room just type a valid room name (alphanumeric value) from the index page (redirected when you log in) and click on **Join**.
@@ -67,4 +73,8 @@ The word **user** is replaced with the username of whom invoked the bot. **STOCK
 | /stock=stock_code      |   STOCK_CODE quote is $value per share |
 | Other words starting with / | sorry user, I did not understand, try /help |
 
+
+## Additional Info
+All the commands were executed from an Ubuntu-20.04 window
 ##### Python Version: 3.8.5
+##### pip Version: 20.0.2
