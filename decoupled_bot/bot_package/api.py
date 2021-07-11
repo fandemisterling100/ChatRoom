@@ -18,7 +18,7 @@ class StooqAPI:
 
         with requests.Session() as s:
             download = s.get(url)
-        print(type(download))
+
         return cls._parse_csv(download)
 
     @staticmethod
