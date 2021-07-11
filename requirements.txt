@@ -1,5 +1,5 @@
 requests==2.22.0
-Django==2.2.12
+Django==3.2.2
 pika==1.2.0
 asgiref==3.3.4
 channels==3.0.3
