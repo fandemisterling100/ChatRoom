@@ -23,7 +23,7 @@ Chatrooms web application with bot assistance to consult share quotes in the mar
 
 	- `$ docker run -p 6379:6379 -d redis:5`
 	
-	- `$ docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672rabbitmq:3-management`
+	- `$ docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management`
 
 4.   Make migrations and migrate them to create the db.sqlite3 on your project directory (being inside chat_app folder):
 	`$ python manage.py makemigrations chatroom`
