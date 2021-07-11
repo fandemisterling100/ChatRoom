@@ -56,7 +56,7 @@ Chatrooms web application with bot assistance to consult share quotes in the mar
 4. To get into a chat room just type a valid room name (alphanumeric value) from the index page (redirected when you log in) and click on **Join**.
 5. Start chatting!
 
-## Bot commands
+## Bot commands 🤖
 The word **user** is replaced with the username of whom invoked the bot. **STOCK_CODE** corresponds to the company symbol that the user is asking and **value** corresponds to the maximum quote of the shares.
 
 | Command     | Bot Answer |
