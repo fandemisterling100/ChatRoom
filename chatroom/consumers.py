@@ -1,13 +1,19 @@
+"""Consumer class in charge of receiving messages and sending
+   them to the channel of the corresponding chat room.
+"""
+
+
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import sync_to_async
 from .models import Message, User
 from bot.interfaces import _BotInterface
-from bot.bot_data import USER_DATA
 
 
 class ChatroomConsumer(AsyncWebsocketConsumer):
     async def connect(self):
+        """Websocket connection to a chat room
+        """
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = 'chat_%s' % self.room_name
 
@@ -81,8 +87,8 @@ class ChatroomConsumer(AsyncWebsocketConsumer):
                                message=message)
 
     # Notify to a bot interface about the new message
-    # to check if it is a special command then the
-    # decoupledbot awakes
+    # to check if it is a special command to publish it on
+    # a queue or just return a default answer
     async def _manage_message(self, user, room_name, message):
         recipient = _BotInterface(user.username, room_name)
         await recipient.receive(

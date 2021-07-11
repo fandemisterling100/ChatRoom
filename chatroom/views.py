@@ -9,6 +9,7 @@ from .models import *
 
 MESSAGES_LIMIT = 50
 
+
 def login_view(request):
     if request.method == "POST":
         # Get values from user to authenticate
@@ -109,7 +110,7 @@ def index(request):
 @login_required
 def room(request, room_name):
     """Render the chatroom page for a specific room name
-        room_name: str
+        room_name (str)
     """
 
     # Load the last 50 messages from the chosen room

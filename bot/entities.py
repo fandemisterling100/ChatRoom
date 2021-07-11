@@ -1,17 +1,26 @@
+"""RabbitMQ consumer and producer layer for the chat
+application. The producer class posts users share
+quotes queries in a queue named 'stock' with the format:
+username:stock_code
+
+The consuming class receives the responses from the
+decoupled bot to the queries of the previous queue.
+"""
+
+
 import pika
 
 QUERY = 'stock'
+
 
 class _Producer:
     def __init__(self):
         self.connection = pika.BlockingConnection(
             pika.ConnectionParameters('localhost'))
-        
+
         self.channel = self.connection.channel()
-        
+
     def publish_query(self, message, username):
-        # Post query on a queue named stock
-        # with the format username:stock_code
         try:
             print("Publishing stock command...")
             stock_code = message.split('=')[1]
@@ -24,15 +33,10 @@ class _Producer:
             self.connection.close()
         except:
             print("Wrong query format")
-            
+
+
 class Consumer:
-    
-    TIMEOUT = 10
-    
     def __init__(self, interface, queue):
-        
-        print("Init chat entity consumer")
-        print(queue)
         self.connection = pika.BlockingConnection(
             pika.ConnectionParameters('localhost'))
         self.channel = self.connection.channel()
@@ -41,11 +45,9 @@ class Consumer:
                                    self.callback,
                                    auto_ack=True)
         self.interface = interface
-        self.accomplished = False
         self.channel.start_consuming()
-        
+
     def callback(self, ch, method, properties, body):
         print("The APP received bot answer!")
-        self.accomplished = True
         # Send answer from bot to chat
-        self.interface.send_stock_quote(body.decode("utf-8"), self)
+        self.interface.send_stock_quote(body.decode("utf-8"))

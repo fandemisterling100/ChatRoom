@@ -1,4 +1,5 @@
-""" Forms needed to Register, LogIn and to find a chatroom
+"""
+    Forms for registration, login and access to chat rooms.
 """
 
 from .utils import room_name_validator
@@ -16,7 +17,8 @@ class LoginForm(forms.Form):
 
 class RegisterForm(forms.Form):
     username = forms.CharField(label='Username',
-                               max_length=30)
+                               max_length=30,
+                               min_length=5)
 
     email = forms.EmailField(label='Email')
 
@@ -33,4 +35,5 @@ class ChatroomForm(forms.Form):
     room_name = forms.CharField(label='Room Name',
                                 max_length=50,
                                 required=True,
+                                min_length=3,
                                 validators=[room_name_validator])
